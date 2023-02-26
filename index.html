@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+            body {
+            background-color: rgb(49, 46, 43);
+            padding: 10px;
+            font-size: 300%;
+        }
+        div.board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+        }
+        div.black {
+            background-color: rgb(118,150,86);
+        }
+
+        div.white {
+            background-color: rgb(238,238,210);
+        }
+
+        span.whitePiece {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="board" class="board"></div>
+    <script>
+        let boardDiv = document.getElementById('board');
+        let boardModel = createBoard();
+
+        boardModel[23].piece ={type: 'king', isWhite: true};
+        boardModel[24].piece ={type: 'queen', isWhite: true};
+        boardModel[1].piece ={type: 'king', isWhite: false};
+        boardModel[2].piece ={type: 'rook', isWhite: false};
+        boardModel[3].piece ={type: 'rook', isWhite: true};
+        boardModel[4].piece ={type: 'bishop', isWhite: false};
+        boardModel[5].piece ={type: 'bishop', isWhite: true};
+        boardModel[6].piece ={type: 'knight', isWhite: false};
+        boardModel[7].piece ={type: 'knight', isWhite: true};
+        boardModel[8].piece ={type: 'pawn', isWhite: true};
+        boardModel[9].piece ={type: 'pawn', isWhite: false};
+        show();
+
+        console.log(boardModel.filter(square => square.piece));
+
+        function createBoard() {
+            return createArray(8).map(createRow).reduce((board, row) => board.concat(row), []);
+
+        }
+
+        function createRow(i){
+            let isFirstSquareWhite = i % 2 == 0;
+            let x = isFirstSquareWhite ? 1 : 0;
+            return createArray(8)
+                    .map(function (i){
+                    return {isBlack: i % 2 === x};
+
+        });
+        }
+
+        function createArray(n){
+            return Array.from(new Array(n).keys());
+
+        }
+
+
+       
+        function show(){
+            boardDiv.innerHTML = boardModel
+                                .map(htmlFromSquareModel)
+                                .reduce((allHtml, squareHtml) => allHtml+squareHtml,'');
+
+        }
+        function htmlFromSquareModel(squareModel){
+                let contents = getColoredPieceCharacter(squareModel.piece);
+                return `<div class="${squareModel.isBlack ? 'black' : 'white'}">${contents}</div>`;
+        }
+
+        function getColoredPieceCharacter(pieceObject){
+            if(!pieceObject) return '';
+            let pieceCharacter = getPieceCharacter(pieceObject.type);
+            return pieceObject.isWhite ? `<span class="whitePiece">${pieceCharacter}</span>` : pieceCharacter;
+            
+        }
+        function getPieceCharacter(type){
+  
+            switch(type){
+                case 'king':
+                    return '♚';
+                    break;
+                case 'queen' :
+                    return '♛';
+                    break;
+                case 'rook':
+                    return '♜';
+                    break;
+                case 'bishop':
+                    return '♝';
+                    break;
+                case 'knight' :
+                    return '♞';
+                    break;
+                case 'pawn' :
+                    return '♟';
+                    break;
+                
+            }
+            return '';
+
+        }
+    </script>
+</body>
+</html>
